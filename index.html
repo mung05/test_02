@@ -1,11 +1,788 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>test</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio — 홍길동</title>
+  <style>
+
+    /* ============================================================
+       0. 기본 리셋 & CSS 변수
+    ============================================================ */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black:  #111111;
+      --white:  #ffffff;
+      --gray:   #f4f4f4;
+      --mid:    #888888;
+      --border: #e8e8e8;
+      --radius: 4px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+      background: var(--white);
+      color: var(--black);
+      line-height: 1.6;
+    }
+
+    img { display: block; max-width: 100%; }
+
+    a { text-decoration: none; color: inherit; }
+
+    /* 공통: 섹션 패딩 */
+    .section { padding: 96px 40px; }
+
+    /* 공통: 섹션 제목 */
+    .section-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--mid);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+
+    .section-desc {
+      font-size: 1rem;
+      color: #555;
+      max-width: 520px;
+      line-height: 1.8;
+    }
+
+    /* ============================================================
+       1. NAV
+    ============================================================ */
+    nav {
+      position: fixed;            /* 스크롤해도 고정 */
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .menu {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .menu a {
+      font-size: 0.875rem;
+      color: #444;
+      transition: color 0.2s;
+    }
+
+    .menu a:hover { color: var(--black); }
+
+    /* 햄버거 */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 1.5px;
+      background: var(--black);
+      transition: all 0.3s;
+    }
+
+    .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+    /* 모바일 드롭다운 */
+    .mobile-menu {
+      display: none;
+      flex-direction: column;
+      background: var(--white);
+      border-top: 1px solid var(--border);
+      padding: 20px 40px;
+      gap: 20px;
+      list-style: none;
+    }
+
+    .mobile-menu.open { display: flex; }
+
+    .mobile-menu a { font-size: 1rem; color: #333; }
+
+    /* ============================================================
+       2. HERO
+    ============================================================ */
+    .hero {
+      width: 100%;
+      height: 100vh;
+      min-height: 560px;
+      background-image:
+        linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+        url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1800&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed; /* 패럴렉스 효과 */
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 24px;
+      position: relative;
+    }
+
+    .hero-tag {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 24px;
+    }
+
+    .hero-title {
+      font-size: clamp(2.4rem, 7vw, 5rem);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: rgba(255,255,255,0.72);
+      max-width: 440px;
+      line-height: 1.8;
+      margin-bottom: 44px;
+    }
+
+    .hero-btn {
+      display: inline-block;
+      padding: 15px 40px;
+      background: var(--white);
+      color: var(--black);
+      font-size: 0.875rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      border-radius: var(--radius);
+      transition: background 0.25s, color 0.25s, outline 0.25s;
+    }
+
+    .hero-btn:hover {
+      background: transparent;
+      color: var(--white);
+      outline: 2px solid var(--white);
+    }
+
+    /* 스크롤 힌트 */
+    .scroll-hint {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      color: rgba(255,255,255,0.45);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      animation: nudge 2.2s infinite;
+    }
+
+    .scroll-hint::after {
+      content: '';
+      width: 1px;
+      height: 44px;
+      background: rgba(255,255,255,0.35);
+    }
+
+    @keyframes nudge {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* ============================================================
+       3. ABOUT
+    ============================================================ */
+    #about {
+      background: var(--white);
+      padding-top: 120px;  /* nav 높이 보정 */
+    }
+
+    .about-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 72px;
+      align-items: center;
+    }
+
+    .about-photo {
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      border-radius: var(--radius);
+    }
+
+    .skill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 28px 0 36px;
+    }
+
+    .skill-tag {
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: #444;
+      letter-spacing: 0.04em;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 13px 30px;
+      background: var(--black);
+      color: var(--white);
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: var(--radius);
+      letter-spacing: 0.05em;
+      transition: background 0.2s;
+    }
+
+    .btn:hover { background: #333; }
+
+    /* ============================================================
+       4. WORK (카드 그리드)
+    ============================================================ */
+    #work { background: var(--gray); }
+
+    .work-head {
+      max-width: 1080px;
+      margin: 0 auto 48px;
+    }
+
+    .card-grid {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.08);
+    }
+
+    .card-img {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+    }
+
+    .card-body { padding: 22px; }
+
+    .card-cat {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--mid);
+      margin-bottom: 8px;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .card-desc {
+      font-size: 0.85rem;
+      color: #666;
+      line-height: 1.65;
+      margin-bottom: 18px;
+    }
+
+    .card-link {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--black);
+      border-bottom: 1px solid var(--black);
+      padding-bottom: 1px;
+      letter-spacing: 0.04em;
+      transition: opacity 0.2s;
+    }
+
+    .card-link:hover { opacity: 0.5; }
+
+    /* ============================================================
+       5. GALLERY
+    ============================================================ */
+    #gallery { background: var(--white); }
+
+    .gallery-head {
+      max-width: 1080px;
+      margin: 0 auto 40px;
+    }
+
+    .gallery-grid {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 10px;
+    }
+
+    .g-item {
+      overflow: hidden;
+      border-radius: var(--radius);
+    }
+
+    .g-item img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .g-item:hover img { transform: scale(1.06); }
+
+    /* ============================================================
+       6. VIDEO
+    ============================================================ */
+    #video { background: var(--black); padding: 96px 40px; }
+
+    .video-head {
+      max-width: 1080px;
+      margin: 0 auto 40px;
+    }
+
+    .video-head .section-tag  { color: rgba(255,255,255,0.4); }
+    .video-head .section-title { color: var(--white); }
+    .video-head .section-desc  { color: rgba(255,255,255,0.55); }
+
+    .video-wrap {
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    /* 반응형 영상: padding-top 트릭 */
+    .ratio-box {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%;
+      background: #222;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .ratio-box iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+    }
+
+    /* ============================================================
+       7. CONTACT
+    ============================================================ */
+    #contact {
+      background: var(--gray);
+      text-align: center;
+    }
+
+    .contact-inner {
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    .contact-email {
+      display: inline-block;
+      font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 32px 0;
+      color: var(--black);
+      border-bottom: 2px solid var(--black);
+      transition: opacity 0.2s;
+    }
+
+    .contact-email:hover { opacity: 0.4; }
+
+    .sns-list {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      margin-top: 24px;
+      list-style: none;
+    }
+
+    .sns-list a {
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: #555;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .sns-list a:hover { color: var(--black); }
+
+    /* ============================================================
+       8. FOOTER
+    ============================================================ */
+    footer {
+      background: var(--black);
+      padding: 32px 40px;
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-inner p {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.04em;
+    }
+
+    /* ============================================================
+       반응형 미디어쿼리
+    ============================================================ */
+    /* 태블릿 */
+    @media (max-width: 1024px) {
+      .section { padding: 72px 32px; }
+      #video    { padding: 72px 32px; }
+      .nav-inner { padding: 0 32px; }
+    }
+
+    /* 모바일 큰 것 */
+    @media (max-width: 900px) {
+      .card-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* 모바일 */
+    @media (max-width: 768px) {
+      /* nav */
+      .menu      { display: none; }
+      .hamburger { display: flex; }
+      .nav-inner { padding: 0 24px; }
+
+      /* sections */
+      .section   { padding: 64px 24px; }
+      #video     { padding: 64px 24px; }
+
+      /* about */
+      .about-inner {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .about-photo {
+        aspect-ratio: 3 / 2;
+        max-width: 360px;
+        margin: 0 auto;
+      }
+
+      /* footer */
+      .footer-inner { flex-direction: column; gap: 8px; text-align: center; }
+      footer { padding: 28px 24px; }
+    }
+
+    /* 모바일 작은 것 */
+    @media (max-width: 560px) {
+      .card-grid { grid-template-columns: 1fr; }
+    }
+
+  </style>
 </head>
 <body>
-    test2
-</body>
-</html>
+
+  <!-- ============================
+       NAV
+  ============================ -->
+  <nav>
+    <div class="nav-inner">
+      <a href="#" class="logo">GD.Hong</a>
+
+      <ul class="menu">
+        <li><a href="#about">About</a></li>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+
+      <button class="hamburger" id="navBtn" aria-label="메뉴">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <ul class="mobile-menu" id="mobileMenu">
+      <li><a href="#about"   onclick="closeMenu()">About</a></li>
+      <li><a href="#work"    onclick="closeMenu()">Work</a></li>
+      <li><a href="#gallery" onclick="closeMenu()">Gallery</a></li>
+      <li><a href="#contact" onclick="closeMenu()">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- ============================
+       HERO
+  ============================ -->
+  <section class="hero">
+    <div class="hero-tag">Frontend Developer & Designer</div>
+    <h1 class="hero-title">안녕하세요,<br>홍길동입니다</h1>
+    <p class="hero-sub">
+      코드로 아이디어를 현실로 만드는<br>프론트엔드 개발자입니다.
+    </p>
+    <a href="#work" class="hero-btn">포트폴리오 보기</a>
+    <div class="scroll-hint">SCROLL</div>
+  </section>
+
+  <!-- ============================
+       ABOUT
+  ============================ -->
+  <section class="section" id="about">
+    <div class="about-inner">
+      <img
+        class="about-photo"
+        src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=700&auto=format&fit=crop"
+        alt="프로필 사진">
+
+      <div>
+        <div class="section-tag">About Me</div>
+        <h2 class="section-title">코드로<br>아이디어를 만듭니다</h2>
+        <p class="section-desc">
+          시각디자인 전공 후 독학으로 웹 개발을 배웠습니다.
+          디자인 감각과 개발 실력을 함께 갖춘 개발자가 목표입니다.
+          사용자 경험을 최우선으로 생각하며 깔끔한 코드를 씁니다.
+        </p>
+
+        <div class="skill-list">
+          <span class="skill-tag">HTML</span>
+          <span class="skill-tag">CSS</span>
+          <span class="skill-tag">JavaScript</span>
+          <span class="skill-tag">React</span>
+          <span class="skill-tag">Figma</span>
+          <span class="skill-tag">Git</span>
+        </div>
+
+        <a href="#" class="btn">이력서 다운로드</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================
+       WORK
+  ============================ -->
+  <section class="section" id="work">
+    <div class="work-head">
+      <div class="section-tag">Selected Work</div>
+      <h2 class="section-title">프로젝트</h2>
+      <p class="section-desc">직접 기획하고 개발한 프로젝트들입니다.</p>
+    </div>
+
+    <div class="card-grid">
+
+      <div class="card">
+        <img class="card-img"
+          src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop" alt="p1">
+        <div class="card-body">
+          <div class="card-cat">Web Design</div>
+          <h3 class="card-title">포트폴리오 사이트</h3>
+          <p class="card-desc">HTML, CSS로 만든 반응형 1페이지 포트폴리오입니다.</p>
+          <a href="#" class="card-link">자세히 보기 →</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <img class="card-img"
+          src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&auto=format&fit=crop" alt="p2">
+        <div class="card-body">
+          <div class="card-cat">UI / UX</div>
+          <h3 class="card-title">쇼핑몰 UI 디자인</h3>
+          <p class="card-desc">Figma로 디자인하고 HTML/CSS로 구현한 쇼핑몰입니다.</p>
+          <a href="#" class="card-link">자세히 보기 →</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <img class="card-img"
+          src="https://images.unsplash.com/photo-1555099962-4199c345e5dd?w=600&auto=format&fit=crop" alt="p3">
+        <div class="card-body">
+          <div class="card-cat">JavaScript</div>
+          <h3 class="card-title">날씨 앱</h3>
+          <p class="card-desc">Open API를 활용해 실시간 날씨를 보여주는 웹 앱입니다.</p>
+          <a href="#" class="card-link">자세히 보기 →</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <img class="card-img"
+          src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600&auto=format&fit=crop" alt="p4">
+        <div class="card-body">
+          <div class="card-cat">Branding</div>
+          <h3 class="card-title">카페 브랜딩</h3>
+          <p class="card-desc">로고부터 패키지까지 통합 브랜드 아이덴티티 작업입니다.</p>
+          <a href="#" class="card-link">자세히 보기 →</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <img class="card-img"
+          src="https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=600&auto=format&fit=crop" alt="p5">
+        <div class="card-body">
+          <div class="card-cat">Web App</div>
+          <h3 class="card-title">할 일 관리 앱</h3>
+          <p class="card-desc">LocalStorage를 활용한 심플한 Todo 리스트 앱입니다.</p>
+          <a href="#" class="card-link">자세히 보기 →</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <img class="card-img"
+          src="https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=600&auto=format&fit=crop" alt="p6">
+        <div class="card-body">
+          <div class="card-cat">Motion</div>
+          <h3 class="card-title">애니메이션 배너</h3>
+          <p class="card-desc">CSS 애니메이션으로 만든 인터랙티브 배너 디자인입니다.</p>
+          <a href="#" class="card-link">자세히 보기 →</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================
+       GALLERY
+  ============================ -->
+  <section class="section" id="gallery">
+    <div class="gallery-head">
+      <div class="section-tag">Gallery</div>
+      <h2 class="section-title">갤러리</h2>
+      <p class="section-desc">작업 과정과 영감을 받은 이미지들입니다.</p>
+    </div>
+
+    <div class="gallery-grid">
+      <div class="g-item"><img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&auto=format&fit=crop" alt="g1"></div>
+      <div class="g-item"><img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&auto=format&fit=crop" alt="g2"></div>
+      <div class="g-item"><img src="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=400&auto=format&fit=crop" alt="g3"></div>
+      <div class="g-item"><img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&auto=format&fit=crop" alt="g4"></div>
+      <div class="g-item"><img src="https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?w=400&auto=format&fit=crop" alt="g5"></div>
+      <div class="g-item"><img src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=400&auto=format&fit=crop" alt="g6"></div>
+      <div class="g-item"><img src="https://images.unsplash.com/photo-1490750967868-88df5691cc14?w=400&auto=format&fit=crop" alt="g7"></div>
+      <div class="g-item"><img src="https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=400&auto=format&fit=crop" alt="g8"></div>
+    </div>
+  </section>
+
+  <!-- ============================
+       VIDEO
+  ============================ -->
+  <section id="video">
+    <div class="video-head">
+      <div class="section-tag">Showreel</div>
+      <h2 class="section-title">쇼릴</h2>
+      <p class="section-desc">작업 과정을 담은 영상입니다.</p>
+    </div>
+
+    <div class="video-wrap">
+      <div class="ratio-box">
+        <iframe
+          src="https://player.vimeo.com/video/76979871"
+          title="쇼릴 영상"
+          frameborder="0"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================
+       CONTACT
+  ============================ -->
+  <section class="section" id="contact">
+    <div class="contact-inner">
+      <div class="section-tag">Contact</div>
+      <h2 class="section-title">함께 일해요</h2>
+      <p class="section-desc" style="margin:0 auto;">
+        프로젝트 문의나 협업 제안은 언제든지 환영합니다.
+      </p>
+
+      <a href="/cdn-cgi/l/email-protection#a9c1c6c7cee9ccd1c8c4d9c5cc87cac6c4" class="contact-email"><span class="__cf_email__" data-cfemail="9ef6f1f0f9defbe6fff3eef2fbb0fdf1f3">[email&#160;protected]</span></a>
+
+      <ul class="sns-list">
+        <li><a href="#">GitHub</a></li>
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">LinkedIn</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================
+       FOOTER
+  ============================ -->
+  <footer>
+    <div class="footer-inner">
+      <p>© 2025 홍길동. All rights reserved.</p>
+      <p>Made with HTML & CSS</p>
+    </div>
+  </footer>
+
+  <!-- 햄버거 JS -->
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    const navBtn = document.getElementById('navBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    navBtn.addEventListener('click', () => 
